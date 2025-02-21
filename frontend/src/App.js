@@ -1,52 +1,59 @@
-import React, { useEffect, useState } from "react";
 // import logo from './logo.svg';
 import './App.css';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const API_URL = "http://localhost:5000/todos"; // Backend URL
 
 function App() {
-  const API_URL = "http://localhost:5000/todos";
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
 
-  // Fetch todos from backend
-  useEffect(() => {
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(data => setTodos(data))
-      .catch(err => console.error("Error fetching todos:", err));
-  }, []);
-
-  // Add a new todo
-  const addTodo = async () => {
-    if (!newTodo.trim()) return;
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: newTodo }),
-    });
-    const data = await res.json();
-    setTodos([...todos, data]); // Update UI immediately
-    setNewTodo("");
-    console.log(setNewTodo)
+  // 📌 Function to Fetch Todos from Database
+  const fetchTodos = () => {
+    axios.get(API_URL)
+      .then(response => setTodos(response.data)) // Update todos state with latest data
+      .catch(error => console.error("Error fetching todos:", error));
   };
 
-  // Delete a todo
-  const deleteTodo = async (id) => {
-    await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    setTodos(todos.filter(todo => todo._id !== id)); // Remove from UI
+  // 📌 Fetch todos on initial load
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  // 📌 Function to Add a New Todo
+  const addTodo = () => {
+    if (!newTodo.trim()) return;
+
+    axios.post(API_URL, { text: newTodo })
+      .then(() => {
+        setNewTodo(""); // Clear input field
+        fetchTodos(); // Fetch latest todos from database
+      })
+      .catch(error => console.error("Error adding todo:", error));
+  };
+
+  // 📌 Function to Delete a Todo
+  const deleteTodo = (id) => {
+    axios.delete(`${API_URL}/${id}`)
+      .then(() => {
+        fetchTodos(); // Fetch latest todos from database after delete
+      })
+      .catch(error => console.error("Error deleting todo:", error));
   };
 
   return (
     <div className="App">
-      <h1>📝 MongoDB To-Do List</h1>
-      <div className="input-container">
-        <input
-          type="text"
-          value={newTodo}
-          onChange={(e) => setNewTodo(e.target.value)}
-          placeholder="Add a new task..."
-        />
-        <button onClick={addTodo}>Add</button>
-      </div>
+      <h1>Todo List</h1>
+
+      <input 
+        type="text"
+        value={newTodo}
+        onChange={(e) => setNewTodo(e.target.value)}
+        placeholder="Add a new task"
+      />
+      <button onClick={addTodo}>Add</button>
+
       <ul>
         {todos.map(todo => (
           <li key={todo._id}>
