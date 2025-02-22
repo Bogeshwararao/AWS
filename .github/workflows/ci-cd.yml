@@ -1,23 +1,63 @@
-name: Backend CI
+name: MERN CI/CD Pipeline
 
-on: [push, pull_request]  # Runs on every push or PR
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Setup Node.js
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install Dependencies
+      # Install Dependencies - Backend
+      - name: Install Backend Dependencies
         run: npm install
-        working-directory: Backend  # Runs inside the Backend folder
+        working-directory: Backend
 
-      - name: Run Tests
+      # Install Dependencies - Frontend
+      - name: Install Frontend Dependencies
+        run: npm install
+        working-directory: Frontend
+
+      # Run Tests - Backend
+      - name: Run Backend Tests
         run: npm test
         working-directory: Backend
+
+      # Run Tests - Frontend
+      - name: Run Frontend Tests
+        run: npm test
+        working-directory: Frontend
+
+  deploy:
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # 🚀 Deploy Backend (Example: Render)
+      - name: Deploy Backend
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          curl -X POST "https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}"
+
+      # 🚀 Deploy Frontend (Example: Vercel)
+      - name: Deploy Frontend to Vercel
+        run: |
+          npm install -g vercel
+          vercel --token=${{ secrets.VERCEL_TOKEN }} --prod
+        working-directory: Frontend
