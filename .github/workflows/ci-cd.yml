@@ -24,22 +24,22 @@ jobs:
       # Install Dependencies - Backend
       - name: Install Backend Dependencies
         run: npm install
-        working-directory: Backend
+        working-directory: backend
 
       # Install Dependencies - Frontend
       - name: Install Frontend Dependencies
         run: npm install
-        working-directory: Frontend
+        working-directory: frontend
 
       # Run Tests - Backend
       - name: Run Backend Tests
         run: npm test
-        working-directory: Backend
+        working-directory: backend
 
       # Run Tests - Frontend
       - name: Run Frontend Tests
         run: npm test
-        working-directory: Frontend
+        working-directory: frontend
 
   deploy:
     needs: build_and_test
@@ -60,4 +60,4 @@ jobs:
         run: |
           npm install -g vercel
           vercel --token=${{ secrets.VERCEL_TOKEN }} --prod
-        working-directory: Frontend
+        working-directory: frontend
