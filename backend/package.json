@@ -4,8 +4,10 @@
   "description": "",
   "main": "app.js",
  "scripts": {
-  "start": "node app.js",
-  "dev": "nodemon app.js"
+  "dev": "nodemon app.js",
+  
+    "start": "node src/app.js",
+    "test": "echo \"No tests available\" && exit 0"
 },
   "keywords": [],
   "author": "",
