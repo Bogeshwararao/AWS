@@ -1,0 +1,23 @@
+name: Backend CI
+
+on: [push, pull_request]  # Runs on every push or PR
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: Backend  # Runs inside the Backend folder
+
+      - name: Run Tests
+        run: npm test
+        working-directory: Backend
