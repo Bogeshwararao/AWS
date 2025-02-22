@@ -1,9 +1,9 @@
 [build]
-command = "npm run build"
-publish = "/build"
-base="/"
+    command = "npm run build"
+    publish = "/build"
+    base="/"
 
-[[redirects]]
+[[redirect]]
     from ="/*"
     to="/index.html"
     status=200
