@@ -1,5 +1,5 @@
 // Load environment variables from .env file
-// require("dotenv").config();
+require("dotenv").config();
 
 const express = require("express"); // Import Express.js
 const cors = require("cors");       // Import CORS middleware
@@ -31,7 +31,7 @@ const Todo = mongoose.model("Todo", todoSchema);
 // ✅ 3. API ROUTES
 
 // 🔹 GET all todos
-app.get("/todos", async (req, res) => {
+app.get("/todo", async (req, res) => {
   const todos = await Todo.find(); // Fetch all todos from MongoDB
   res.json(todos); // Send back as JSON
 });
