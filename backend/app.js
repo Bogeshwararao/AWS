@@ -31,7 +31,7 @@ const Todo = mongoose.model("Todo", todoSchema);
 // ✅ 3. API ROUTES
 
 // 🔹 GET all todos
-app.get("/todo", async (req, res) => {
+app.get("/todos", async (req, res) => {
   const todos = await Todo.find(); // Fetch all todos from MongoDB
   res.json(todos); // Send back as JSON
 });
